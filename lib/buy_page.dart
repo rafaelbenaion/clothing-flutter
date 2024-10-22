@@ -1,14 +1,7 @@
-// --------------------------------------------------------------------------------------------- //
-// Project Mobile, M2 MIAGE IAE, Université Côte d'Azur                                          //
-// --------------------------------------------------------------------------------------------- //
-// Description:                                                                                  //
-// This project is a light Flutter clone of the Vintage app using Firebase.                      //
-// --------------------------------------------------------------------------------------------- //
-// Rafael Baptista, 2024                                                                         //
-// --------------------------------------------------------------------------------------------- //
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tp_clothing/detail_page.dart';
+import 'package:tp_clothing/cart_page.dart';
 
 class BuyPage extends StatefulWidget {
   @override
@@ -20,11 +13,9 @@ class _BuyPageState extends State<BuyPage> {
 
   final List<String> _pageTitles = ['Acheter', 'Panier', 'Profil'];
 
-  // This function will handle what happens when you click on a bottom nav item
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      // You can add navigation or different logic here when switching tabs
     });
   }
 
@@ -32,10 +23,10 @@ class _BuyPageState extends State<BuyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Liste des vêtements à acheter'),
+        title: Text('Clothing App'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('clothing').snapshots(),
+        stream: FirebaseFirestore.instance.collection('clothes').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Erreur : ${snapshot.error}'));
@@ -50,12 +41,19 @@ class _BuyPageState extends State<BuyPage> {
             itemCount: clothes.length,
             itemBuilder: (context, index) {
               final clothing = clothes[index].data() as Map<String, dynamic>;
+
               return ListTile(
-                leading: Image.network(clothing['image_url']),
+                leading: Image.network(clothing['image_url']),  // Display the image using the URL
                 title: Text(clothing['title']),
                 subtitle: Text('Taille: ${clothing['size']} - Prix: ${clothing['price']} €'),
                 onTap: () {
-                  // We'll add navigation to the detail page later
+                  // Navigate to the detail page when a clothing item is tapped
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailPage(clothing: clothing),  // Pass clothing data to DetailPage
+                    ),
+                  );
                 },
               );
             },
@@ -64,22 +62,36 @@ class _BuyPageState extends State<BuyPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
-            label: 'Acheter',
+            label: 'Buy',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: 'Panier',
+            label: 'My Cart',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profil',
+            label: 'Profile',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        onTap: _onItemTapped,
+        currentIndex: 0, // Set to Cart as the default selected tab
+        selectedItemColor: const Color.fromARGB(255, 54, 155, 244), // Cart is active
+        onTap: (index) {
+          if (index == 0) {
+            // Navigate to BuyPage
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BuyPage()),
+            );
+          } else if (index == 1) {
+            // Navigate to CartPage
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CartPage()),
+            );
+          }
+        },
       ),
     );
   }
