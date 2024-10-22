@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125329063547",
+    "project_id": "tp-flutter-univ",
+    "storage_bucket": "tp-flutter-univ.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125329063547:android:c273b6d74154f69358acde",
+        "android_client_info": {
+          "package_name": "com.tpclothing.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB680t7I-u3T3e8FOpcc3oWa7bLcx1788Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
