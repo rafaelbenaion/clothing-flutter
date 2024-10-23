@@ -19,13 +19,8 @@ class _CartPageState extends State<CartPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('My Cart'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Go back to BuyPage
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -93,7 +88,7 @@ class _CartPageState extends State<CartPage> {
           ),
         ],
         currentIndex: _selectedIndex, // Active tab index
-        selectedItemColor: const Color.fromARGB(255, 112, 191, 255), // Active tab color will be blue
+        selectedItemColor: const Color.fromARGB(255, 0, 0, 0), // Active tab color will be blue
         onTap: (index) {
           setState(() {
             _selectedIndex = index;  // Update the current index

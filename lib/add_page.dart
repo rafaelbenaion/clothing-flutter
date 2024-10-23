@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart'; // For text input formatting
 
 class AddClothingPage extends StatefulWidget {
   @override
@@ -45,8 +46,16 @@ class _AddClothingPageState extends State<AddClothingPage> {
   }
 
   Future<void> _saveClothing() async {
-    if (_titleController.text.isEmpty || _brandController.text.isEmpty || _priceController.text.isEmpty || _imageUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill in all fields and upload an image.')));
+    // Check if any required field is empty
+    if (_titleController.text.isEmpty ||
+        _brandController.text.isEmpty ||
+        _priceController.text.isEmpty ||
+        _imageUrl == null ||
+        _selectedCategory == null ||
+        _selectedSize == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields and upload an image.')),
+      );
       return;
     }
 
@@ -78,95 +87,118 @@ class _AddClothingPageState extends State<AddClothingPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Image Picker and Display
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  height: 200,
-                  color: Colors.grey[300],
-                  child: _image != null
-                      ? Image.file(_image!, fit: BoxFit.cover)
-                      : Icon(Icons.add_photo_alternate, size: 100, color: Colors.grey[700]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Image Picker and Display
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        height: 200,
+                        color: Colors.grey[300],
+                        child: _image != null
+                            ? Image.file(_image!, fit: BoxFit.cover)
+                            : Icon(Icons.add_photo_alternate, size: 100, color: Colors.grey[700]),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Title TextField
+                    TextField(
+                      controller: _titleController,
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                        errorText: _titleController.text.isEmpty ? 'Title is required' : null,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Category Dropdown
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(labelText: 'Category'),
+                      value: _selectedCategory,
+                      items: _categories.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                      validator: (value) {
+                        return value == null ? 'Category is required' : null;
+                      },
+                    ),
+                    SizedBox(height: 16),
+
+                    // Size Dropdown
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(labelText: 'Size'),
+                      value: _selectedSize,
+                      items: _sizes.map((String size) {
+                        return DropdownMenuItem<String>(
+                          value: size,
+                          child: Text(size),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedSize = value;
+                        });
+                      },
+                      validator: (value) {
+                        return value == null ? 'Size is required' : null;
+                      },
+                    ),
+                    SizedBox(height: 16),
+
+                    // Brand TextField
+                    TextField(
+                      controller: _brandController,
+                      decoration: InputDecoration(
+                        labelText: 'Brand',
+                        errorText: _brandController.text.isEmpty ? 'Brand is required' : null,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Price TextField (numeric only)
+                    TextField(
+                      controller: _priceController,
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(
+                        labelText: 'Price',
+                        errorText: _priceController.text.isEmpty ? 'Price is required' : null,
+                      ),
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Title TextField
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+            ),
+            // Save Button at the bottom
+            ElevatedButton(
+              onPressed: () async {
+                await _uploadImage();  // Upload image first
+                _saveClothing();       // Save clothing data
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black, // Black color for the button
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
-              SizedBox(height: 16),
-
-              // Category Dropdown
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Category'),
-                value: _selectedCategory,
-                items: _categories.map((String category) {
-                  return DropdownMenuItem<String>(
-                    value: category,
-                    child: Text(category),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
-              ),
-              SizedBox(height: 16),
-
-              // Size Dropdown
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Size'),
-                value: _selectedSize,
-                items: _sizes.map((String size) {
-                  return DropdownMenuItem<String>(
-                    value: size,
-                    child: Text(size),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedSize = value;
-                  });
-                },
-              ),
-              SizedBox(height: 16),
-
-              // Brand TextField
-              TextField(
-                controller: _brandController,
-                decoration: InputDecoration(labelText: 'Brand'),
-              ),
-              SizedBox(height: 16),
-
-              // Price TextField (numeric only)
-              TextField(
-                controller: _priceController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Price'),
-              ),
-              SizedBox(height: 32),
-
-              // Save Button
-              ElevatedButton(
-                onPressed: () async {
-                  await _uploadImage();  // Upload image first
-                  _saveClothing();       // Save clothing data
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Text('Save Clothing', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
+              child: Text('Save Clothing', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
       ),
     );

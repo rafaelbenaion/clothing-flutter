@@ -120,6 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -247,7 +248,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
         currentIndex: _selectedIndex, // Active tab index
-        selectedItemColor: const Color.fromARGB(255, 112, 191, 255), // Active tab color will be blue
+        selectedItemColor: const Color.fromARGB(255, 0, 0, 0), // Active tab color will be blue
         onTap: (index) {
           setState(() {
             _selectedIndex = index;  // Update the current index
