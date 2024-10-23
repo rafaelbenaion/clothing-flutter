@@ -52,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login Clothing'),
+        title: Text('Login Clothing App'),
+        automaticallyImplyLeading: false,  // This hides the back button
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

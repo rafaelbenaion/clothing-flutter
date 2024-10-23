@@ -34,6 +34,9 @@ dependencies:
   firebase_core: ^3.6.0
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4  # Add Firestore dependency for data fetching
+  intl: ^0.17.0  # Add the intl package to your dependencies
+  firebase_storage: ^12.3.4  # Ensure you're using the correct version for your project
+  image_picker: ^0.8.7+4     # Add the image picker package here
 
 
 

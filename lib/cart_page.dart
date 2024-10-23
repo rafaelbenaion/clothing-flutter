@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tp_clothing/buy_page.dart';
+import 'package:tp_clothing/profile_page.dart';
+
 
 // This will be a global cart list to manage the cart items
 List<Map<String, dynamic>> cartItems = [];
@@ -10,6 +12,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  int _selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
     double total = cartItems.fold(0, (sum, item) => sum + item['price']);
@@ -89,20 +92,28 @@ class _CartPageState extends State<CartPage> {
             label: 'Profile',
           ),
         ],
-        currentIndex: 1, // Set to Cart as the default selected tab
-        selectedItemColor: Color.fromARGB(255, 54, 155, 244), // Cart is active
+        currentIndex: _selectedIndex, // Active tab index
+        selectedItemColor: const Color.fromARGB(255, 112, 191, 255), // Active tab color will be blue
         onTap: (index) {
-          if (index == 0) {
-            // Navigate to BuyPage
-            Navigator.push(
+          setState(() {
+            _selectedIndex = index;  // Update the current index
+          });
+
+          // Navigation logic based on the selected index
+          if (_selectedIndex == 0) {
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => BuyPage()),
             );
-          } else if (index == 1) {
-            // Navigate to CartPage
-            Navigator.push(
+          } else if (_selectedIndex == 1) {
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => CartPage()),
+            );
+          } else if (_selectedIndex == 2) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()),
             );
           }
         },

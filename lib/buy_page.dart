@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tp_clothing/detail_page.dart';
 import 'package:tp_clothing/cart_page.dart';
+import 'package:tp_clothing/profile_page.dart';
 
 class BuyPage extends StatefulWidget {
   @override
@@ -62,7 +63,7 @@ class _BuyPageState extends State<BuyPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-           BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
             label: 'Buy',
           ),
@@ -75,20 +76,28 @@ class _BuyPageState extends State<BuyPage> {
             label: 'Profile',
           ),
         ],
-        currentIndex: 0, // Set to Cart as the default selected tab
-        selectedItemColor: const Color.fromARGB(255, 54, 155, 244), // Cart is active
+        currentIndex: _selectedIndex, // Active tab index
+        selectedItemColor: const Color.fromARGB(255, 112, 191, 255), // Active tab color will be blue
         onTap: (index) {
-          if (index == 0) {
-            // Navigate to BuyPage
-            Navigator.push(
+          setState(() {
+            _selectedIndex = index;  // Update the current index
+          });
+
+          // Navigation logic based on the selected index
+          if (_selectedIndex == 0) {
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => BuyPage()),
             );
-          } else if (index == 1) {
-            // Navigate to CartPage
-            Navigator.push(
+          } else if (_selectedIndex == 1) {
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => CartPage()),
+            );
+          } else if (_selectedIndex == 2) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()),
             );
           }
         },
