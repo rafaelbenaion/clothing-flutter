@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------- //
+// Project Mobile, M2 MIAGE IAE, Université Côte d'Azur                                          //
+// --------------------------------------------------------------------------------------------- //
+// Description:                                                                                  //
+// This project is a mockup Flutter clone of the Vintage app using Firebase.                     //
+// --------------------------------------------------------------------------------------------- //
+// Rafael Baptista, 2024                                                                         //
+// --------------------------------------------------------------------------------------------- //
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detail_page.dart';
